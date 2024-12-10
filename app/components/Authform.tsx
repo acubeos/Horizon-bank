@@ -13,6 +13,7 @@ import { authFormSchema } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { signUp } from "@/lib/actions/user.actions"
 import { signIn } from "@/lib/actions/user.actions"
+import PlaidLink from "./PlaidLink"
 
 const Authform = ({ type }: { type: string }) => {
 	const router = useRouter()
@@ -34,8 +35,20 @@ const Authform = ({ type }: { type: string }) => {
 		setIsLoading(true)
 
 		try {
+			const userData = {
+				firstName: data.firstName!,
+				lastName: data.lastName!,
+				address1: data.address1!,
+				city: data.city!,
+				state: data.state!,
+				postalCode: data.postalCode!,
+				dateOfBirth: data.dateOfBirth!,
+				email: data.email,
+				password: data.password,
+				ssn: data.ssn!,
+			}
 			if (type === "sign-up") {
-				const newUser = await signUp(data)
+				const newUser = await signUp(userData)
 				setUser(newUser)
 			}
 
@@ -81,7 +94,9 @@ const Authform = ({ type }: { type: string }) => {
 				</div>
 			</header>
 			{user ? (
-				<div className='flex flex-col gap-4'></div>
+				<div className='flex flex-col gap-4'>
+					<PlaidLink user={user} variant='primary' />
+				</div>
 			) : (
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -105,7 +120,7 @@ const Authform = ({ type }: { type: string }) => {
 									form={form}
 									label={"Address"}
 									placeholder='Enter your address'
-									name='address'
+									name='address1'
 								/>
 								<CustomInput
 									form={form}
@@ -132,7 +147,7 @@ const Authform = ({ type }: { type: string }) => {
 										form={form}
 										label={"Birthday"}
 										placeholder='YYYY-MM-DD'
-										name='birthday'
+										name='dateOfBirth'
 									/>
 									<CustomInput
 										form={form}
